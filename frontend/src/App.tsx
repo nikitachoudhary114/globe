@@ -1,0 +1,26 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Landing from "./pages/Landing";
+import Signup from "./pages/Signup";
+import Navbar from "./components/Navbar";
+import "./App.css";
+import { ToastContainer, toast } from 'react-toastify'
+import Signin from "./pages/Signin"
+
+
+
+function App() {
+  return (
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path = "/login" element ={<Signin/>}/>
+      </Routes>
+      <ToastContainer />
+    </Router>
+  );
+}
+
+export default App;
+
