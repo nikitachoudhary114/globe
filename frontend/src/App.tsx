@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import "./App.css";
 import { ToastContainer, toast } from 'react-toastify'
 import Signin from "./pages/Signin"
+import OAuth2RedirectHandler from "./pages/OAuth2RedirectHandler";
 
 
 
@@ -15,7 +16,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path = "/login" element ={<Signin/>}/>
+        <Route path="/login" element={<Signin />} />
+
+        <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
       </Routes>
       <ToastContainer />
     </Router>

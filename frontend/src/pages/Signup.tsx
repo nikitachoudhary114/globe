@@ -162,6 +162,47 @@ const Signup: React.FC = () => {
           </button>
         </form>
 
+        <div className="mt-6 flex items-center justify-center">
+          <div className="border-t w-full border-gray-300" />
+          <span className="px-3 text-gray-400 text-sm">or</span>
+          <div className="border-t w-full border-gray-300" />
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={() =>
+              (window.location.href =
+                "http://localhost:8080/oauth2/authorization/google")
+            }
+            type="button"
+            className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold py-2 rounded-full transition-all duration-200 shadow-sm"
+          >
+            <svg
+              className="w-5 h-5"
+              viewBox="0 0 533.5 544.3"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill="#4285F4"
+                d="M533.5 278.4c0-17.4-1.6-34.1-4.7-50.3H272v95.1h146.9c-6.3 33.9-25 62.6-53.3 82l86.1 67.1c50.1-46.2 81.8-114.4 81.8-194z"
+              />
+              <path
+                fill="#34A853"
+                d="M272 544.3c72.6 0 133.6-24.1 178.1-65.4l-86.1-67.1c-24 16.1-54.8 25.7-92 25.7-70.7 0-130.6-47.7-152-111.8l-89 68.5c43.9 87.5 134.1 150.1 241 150.1z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M120 325.7c-10.5-30.9-10.5-64.1 0-95l-89-68.5c-39.1 76.9-39.1 167.1 0 244z"
+              />
+              <path
+                fill="#EA4335"
+                d="M272 107.7c39.5 0 75.1 13.6 103.1 40.3l77.4-77.4C405.6 24.1 344.6 0 272 0 165.1 0 74.9 62.6 31 150.1l89 68.5c21.4-64.1 81.3-111.8 152-111.8z"
+              />
+            </svg>
+            Continue with Google
+          </button>
+        </div>
+
         <p className="text-xs text-gray-500 text-center mt-6">
           By signing up, you agree to our{" "}
           <a href="#" className="text-blue-600 hover:underline">
