@@ -1,16 +1,18 @@
 package com.globetripster.backend.service;
-import io.jsonwebtoken.security.Keys;
-import javax.crypto.SecretKey;
-
-import io.jsonwebtoken.*;
-
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class JwtUtil {
@@ -28,12 +30,10 @@ public class JwtUtil {
         if (SECRET == null || SECRET.isEmpty()) {
             throw new IllegalArgumentException("JWT secret not set in application.properties");
         }
-
         key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     }
-    public String generateToken(String email) {
-        SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
+    public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
@@ -42,30 +42,42 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String extractEmail(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+    public String generateResetToken(String email) {
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 10 * 60 * 1000)) // 10 mins
+                .signWith(key, SignatureAlgorithm.HS256) 
+                .compact();
+    }    
 
+    public String extractEmail(String token) {
+    try {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody()
+            .getSubject();
+    } catch (ExpiredJwtException e) {
+        System.out.println("Token expired: " + e.getMessage());
+        return null;
+    } catch (JwtException e) {
+        System.out.println("Invalid token: " + e.getMessage());
+        return null;
     }
+}
+
 
     public boolean validateToken(String token) {
         try {
-            SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
-
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
-
             return true;
         } catch (JwtException e) {
             return false;
         }
     }
-
 }

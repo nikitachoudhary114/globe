@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -43,19 +44,23 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler((request, response, authentication) -> {
-                            String email = authentication.getName();
+                            // Get OAuth2 user details
+                            OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
+                            String email = oauthUser.getAttribute("email");
+                            String name = oauthUser.getAttribute("name");
 
-                            // Save user if not exists
+                            // Save to DB if not exists
                             userRepository.findByEmail(email).orElseGet(() -> {
                                 User newUser = new User();
                                 newUser.setEmail(email);
+                                newUser.setName(name);
                                 newUser.setProvider("google");
                                 return userRepository.save(newUser);
                             });
 
                             // Generate JWT token
                             String token = jwtUtil.generateToken(email);
-                            System.out.println("OAuth2 login success, token: " + token);
+                            // System.out.println("OAuth2 login success, token: " + token);
 
                             // Redirect to frontend with token
                             String redirectUrl = "http://localhost:5173/oauth2/redirect?token=" +
